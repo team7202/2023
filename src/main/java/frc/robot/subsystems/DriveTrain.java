@@ -107,8 +107,8 @@ public class DriveTrain extends SubsystemBase {
 
     SmartDashboard.putNumber("pitch", gyro.getPitch());
 
-    if (Math.abs(leftJoystick.getY()) > 0.05 || Math.abs(rightJoystick.getY()) > 0.05) {
-      this.drive.tankDrive(leftJoystick.getY()*0.85, rightJoystick.getY()*0.85);
+    if (Math.abs(leftJoystick.getY()) >= 0.05 || Math.abs(rightJoystick.getY()) >= 0.05) {
+      this.drive.tankDrive(Math.copySign(Math.pow(leftJoystick.getY(), 2), leftJoystick.getY()), Math.copySign(Math.pow(rightJoystick.getY(), 2), rightJoystick.getY()));
     }
 
     // if (leftJoystick.getRawButtonPressed(7)) {
