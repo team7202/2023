@@ -20,9 +20,9 @@ public final class Constants {
     
     public static class DriveTrain {
         /* PID VALUES FOR ROTATING TO ANGLE */
-        public static final double kP = 0.125;
+        public static final double kP = 0.05;
         public static final double kI = 0;
-        public static final double kD = 0.025;
+        public static final double kD = 0.0075;
         /* MOTOR ID NUMBERS */
         public static final int FRONT_LEFT_ID = 1;
         public static final int REAR_LEFT_ID = 2;
@@ -56,9 +56,9 @@ public final class Constants {
       }
 
       public static class Limelight {
-        public static final float ROTATE_P = -0.137f;
+        public static final float ROTATE_P = -0.1125f;
         public static final float ROTATE_I = 0f;
-        public static final float ROTATE_D = -0.0105f;
+        public static final float ROTATE_D = -0.0075f;
         
         public static final float DRIVE_P = -0.15f;
         public static final float DRIVE_I = -0f;
