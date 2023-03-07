@@ -61,11 +61,12 @@ public class Limelight extends SubsystemBase {
       if (this.pipeline.getInteger(0) != 0) {
         this.pipeline.setNumber(0);
       }
-      if (Math.abs(tx.getDouble(0)) < 0.75 && (Math.abs(tx.getDouble(0)) > 0)) {
-        driveTrain.tankDrive(driveVal, driveVal);
-      } else {
-        driveTrain.tankDrive(-rotateVal, rotateVal);
-      }
+      // if (Math.abs(tx.getDouble(0)) < 0.75 && (Math.abs(tx.getDouble(0)) > 0)) {
+      //   driveTrain.tankDrive(driveVal, driveVal);
+      // } else {
+      //   driveTrain.tankDrive(-rotateVal, rotateVal);
+      // }
+      driveTrain.tankDrive(-rotateVal, rotateVal);
     } else {
       if (this.pipeline.getInteger(0) != 1) {
         this.pipeline.setNumber(1);
