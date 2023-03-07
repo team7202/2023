@@ -121,6 +121,11 @@ public class Slider extends SubsystemBase {
             .clamp(this.sliderPID.calculate(Math.round(this.leftSlider.getEncoder().getPosition()), -30), -.15, .15));
         rightSlider.set(MathUtil
             .clamp(this.sliderPID.calculate(Math.round(this.rightSlider.getEncoder().getPosition()), 30), -.15, .15));
+      } else if (RobotContainer.armMode.equals("3rd")) {
+        leftSlider.set(MathUtil
+            .clamp(this.sliderPID.calculate(Math.round(this.leftSlider.getEncoder().getPosition()), -17.5), -.15, .15));
+        rightSlider.set(MathUtil
+            .clamp(this.sliderPID.calculate(Math.round(this.rightSlider.getEncoder().getPosition()), 17.5), -.15, .15));
       } else if (RobotContainer.sliderMode.equals("zero")) {
         if (Math.abs(this.leftSlider.getEncoder().getPosition()) <= 1) {
           this.leftSlider.set(0);
