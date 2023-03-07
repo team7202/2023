@@ -45,6 +45,8 @@ public class AutonomousCommand extends CommandBase {
     driveTrain.frontLeft.getEncoder().setPosition(0);
     driveTrain.frontRight.getEncoder().setPosition(0);
     SmartDashboard.putNumber("driveFeet", 6);
+    driveTrain.leftGroup.set(0);
+    driveTrain.rightGroup.set(0);
   }
 
   // Called every time the scheduler runs while the command is scheduled.
@@ -71,45 +73,47 @@ public class AutonomousCommand extends CommandBase {
       gripper.setGripperMode(Value.kReverse);
       RobotContainer.armMode = "zero";
       RobotContainer.sliderMode = "zero";
-      if (mode.equals("forward")) {
-        if (driveTrain.frontLeft.getEncoder().getPosition() > driveTrain.ticksToFeet(-14)
-            || driveTrain.frontRight.getEncoder().getPosition() < driveTrain.ticksToFeet(14)) {
-          driveTrain.leftGroup.set(-MathUtil.clamp(
-              this.feetPID.calculate(driveTrain.frontLeft.getEncoder().getPosition(), driveTrain.ticksToFeet(-14)),
-              -0.5,
-              0.5));
-          driveTrain.rightGroup.set(MathUtil.clamp(
-              this.feetPID.calculate(driveTrain.frontRight.getEncoder().getPosition(), driveTrain.ticksToFeet(14)),
-              -0.5, 0.5));
-        } else {
-          mode = "backwards";
-        }
-      }
-
-      else if (mode.equals("backwards")) {
-        if (driveTrain.getYaw() > 3 || driveTrain.getYaw() > 3) {
-          driveTrain.rotateToAngle(0);
-        } else {
-          if (driveTrain.frontLeft.getEncoder().getPosition() < driveTrain.ticksToFeet(-3)
-              || driveTrain.frontRight.getEncoder().getPosition() > driveTrain.ticksToFeet(3)) {
+      if (timer.get() > 2.5) {
+        if (mode.equals("forward")) {
+          if (driveTrain.frontLeft.getEncoder().getPosition() > driveTrain.ticksToFeet(-12.5)
+              || driveTrain.frontRight.getEncoder().getPosition() < driveTrain.ticksToFeet(12.5)) {
             driveTrain.leftGroup.set(-MathUtil.clamp(
-                this.feetPID.calculate(driveTrain.frontLeft.getEncoder().getPosition(), driveTrain.ticksToFeet(-3)),
-                -0.5,
-                0.5));
+                this.feetPID.calculate(driveTrain.frontLeft.getEncoder().getPosition(), driveTrain.ticksToFeet(-12.5)),
+                -0.4,
+                0.4));
             driveTrain.rightGroup.set(MathUtil.clamp(
-                this.feetPID.calculate(driveTrain.frontRight.getEncoder().getPosition(), driveTrain.ticksToFeet(3)),
-                -0.5, 0.5));
+                this.feetPID.calculate(driveTrain.frontRight.getEncoder().getPosition(), driveTrain.ticksToFeet(12.5)),
+                -0.4, 0.4));
           } else {
-            mode = "balance";
+            mode = "backwards";
           }
         }
-      }
 
-      else if (mode.equals("balance")) {
-        if (driveTrain.getPitch() < -9) {
-          driveTrain.tankDrive(-0.3, -0.3);
-        } else if (driveTrain.getPitch() > 9) {
-          driveTrain.tankDrive(0.3, 0.3);
+        else if (mode.equals("backwards")) {
+          if (driveTrain.getYaw() > 3 || driveTrain.getYaw() > 3) {
+            driveTrain.rotateToAngle(0);
+          } else {
+            if (driveTrain.frontLeft.getEncoder().getPosition() < driveTrain.ticksToFeet(-6)
+                || driveTrain.frontRight.getEncoder().getPosition() > driveTrain.ticksToFeet(6)) {
+              driveTrain.leftGroup.set(-MathUtil.clamp(
+                  this.feetPID.calculate(driveTrain.frontLeft.getEncoder().getPosition(), driveTrain.ticksToFeet(-6)),
+                  -0.4,
+                  0.4));
+              driveTrain.rightGroup.set(MathUtil.clamp(
+                  this.feetPID.calculate(driveTrain.frontRight.getEncoder().getPosition(), driveTrain.ticksToFeet(6)),
+                  -0.4, 0.4));
+            } else {
+              mode = "balance";
+            }
+          }
+        }
+
+        else if (mode.equals("balance")) {
+          if (driveTrain.getPitch() < -4.5) {
+            driveTrain.tankDrive(-0.26, -0.26);
+          } else if (driveTrain.getPitch() > 7.5) {
+            driveTrain.tankDrive(0.26, 0.26);
+          }
         }
       }
     }
