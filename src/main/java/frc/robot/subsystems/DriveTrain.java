@@ -6,8 +6,6 @@ package frc.robot.subsystems;
 
 import com.kauailabs.navx.frc.AHRS;
 import com.revrobotics.CANSparkMax;
-import com.revrobotics.RelativeEncoder;
-import com.revrobotics.CANSparkMaxLowLevel.MotorType;
 
 import edu.wpi.first.math.MathUtil;
 import edu.wpi.first.math.controller.PIDController;
@@ -17,14 +15,13 @@ import edu.wpi.first.wpilibj.motorcontrol.MotorControllerGroup;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants;
-import frc.robot.RobotContainer;
 
 public class DriveTrain extends SubsystemBase {
 
-  private final CANSparkMax rearLeft;
+  public final CANSparkMax rearLeft;
   public final CANSparkMax frontLeft;
   public final CANSparkMax frontRight;
-  private final CANSparkMax rearRight;
+  public final CANSparkMax rearRight;
 
   public MotorControllerGroup leftGroup;
   public MotorControllerGroup rightGroup;
@@ -36,16 +33,11 @@ public class DriveTrain extends SubsystemBase {
 
   public final AHRS gyro;
   private final PIDController pid;
-  private double angleToRotate;
-
-  private RelativeEncoder relativeEncoder;
 
   private float pitch;
   private float roll;
   private float yaw;
   private double angle;
-
-  private boolean tipOverride = false;
 
   /** Creates a new DriveTrain. */
   public DriveTrain(Joystick leftJoystick, Joystick rightJoystick) {
@@ -88,6 +80,9 @@ public class DriveTrain extends SubsystemBase {
 
     SmartDashboard.putNumber("frontLeftPos", frontLeft.getEncoder().getPosition());
     SmartDashboard.putNumber("frontRightPos", frontRight.getEncoder().getPosition());
+    SmartDashboard.putNumber("roll", gyro.getPitch());
+    SmartDashboard.putNumber("yaw", gyro.getYaw());
+    SmartDashboard.putNumber("angle", gyro.getAngle());
 
     // if(gyro.getPitch()> 10) {
     // tipOverride = true;
@@ -107,8 +102,34 @@ public class DriveTrain extends SubsystemBase {
 
     SmartDashboard.putNumber("pitch", gyro.getPitch());
 
-    if (Math.abs(leftJoystick.getY()) >= 0.05 || Math.abs(rightJoystick.getY()) >= 0.05) {
-      this.drive.tankDrive(Math.copySign(Math.pow(leftJoystick.getY(), 2), leftJoystick.getY()), Math.copySign(Math.pow(rightJoystick.getY(), 2), rightJoystick.getY()));
+    if (leftJoystick.getRawButton(2)) {
+      rotateToAngle(-180);
+      return;
+    }
+
+    if (leftJoystick.getTrigger()) {
+      this.drive.tankDrive(-0.35, -0.35);
+      return;
+    } else if (Math.abs(leftJoystick.getY()) >= 0.05 || Math.abs(rightJoystick.getY()) >= 0.05) {
+      // double difference = Math.abs(leftJoystick.getY() - rightJoystick.getY());
+      // this.drive.tankDrive(Math.copySign(Math.pow(leftJoystick.getY(), 2),
+      // leftJoystick.getY()) * 0.7,
+      // Math.copySign(Math.pow(rightJoystick.getY(), 2), rightJoystick.getY()) *
+      // 0.7);
+      // if (leftJoystick.getY() < rightJoystick.getY())
+      // drive.tankDrive(leftJoystick.getY() + calculateDifference(),
+      // rightJoystick.getY());
+      // else
+      // drive.tankDrive(leftJoystick.getY() + calculateDifference(),
+      // rightJoystick.getY());
+      // return;
+      // } else {
+      drive.tankDrive(leftJoystick.getY() * 0.85, rightJoystick.getY() * 0.85);
+      // }
+    }
+
+    if (rightJoystick.getRawButtonPressed(16)) {
+      gyro.reset();
     }
 
     // if (leftJoystick.getRawButtonPressed(7)) {
@@ -119,10 +140,10 @@ public class DriveTrain extends SubsystemBase {
     // if(rightJoystick.getRawButtonPressed()) {
     // this.armMode = "off";
     // }
+  }
 
-    SmartDashboard.putNumber("roll", gyro.getPitch());
-    SmartDashboard.putNumber("yaw", gyro.getYaw());
-    SmartDashboard.putNumber("angle", gyro.getAngle());
+  public double calculateDifference() {
+    return 0.4 * Math.abs(leftJoystick.getY() - rightJoystick.getY());
   }
 
   public float getPitch() {
