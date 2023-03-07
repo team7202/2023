@@ -75,12 +75,13 @@ public class Lights extends SubsystemBase {
         lights.setSpeed(Constants.ColorConstants.RED);
         break;
       case YELLOW:
-        lights.setSpeed(0.15);
+        lights.setSpeed(0.65);
         break;
       case PURPLE:
-        lights.setSpeed(0.35);
+        lights.setSpeed(0.89);
         break;
       default:
+        lights.setSpeed(0.99);
         break;
     }
     // This method will be called once per scheduler run
