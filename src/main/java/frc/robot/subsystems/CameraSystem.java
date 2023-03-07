@@ -13,12 +13,15 @@ public class CameraSystem extends SubsystemBase {
   Thread m_visionThread;
 
   private UsbCamera camera;
+  private UsbCamera camera2;
   
   // private final UsbCamera camera;
   /** Creates a new CameraSystem. */
   public CameraSystem() {
     this.camera = CameraServer.startAutomaticCapture();
+    this.camera2 = CameraServer.startAutomaticCapture();
     this.camera.setResolution(320, 240);
+    this.camera2.setResolution(320, 240);
     // this.camera.setResolution(720, 480);
   }
 
@@ -29,5 +32,9 @@ public class CameraSystem extends SubsystemBase {
 
   public UsbCamera getCamera() {
       return camera;
+  }
+
+  public UsbCamera getCamera2() {
+      return camera2;
   }
 }
