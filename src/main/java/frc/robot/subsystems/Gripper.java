@@ -35,10 +35,18 @@ public class Gripper extends SubsystemBase {
 
   @Override
   public void periodic() {
-    if(leftJoystick.getTriggerPressed()) {
-      gripperMode = Value.kReverse;
-    } else if(rightJoystick.getTriggerPressed()) {
-      gripperMode = Value.kForward;      
+    // if(leftJoystick.getTriggerPressed()) {
+    //   gripperMode = Value.kReverse;
+    // } else if(rightJoystick.getTriggerPressed()) {
+    //   gripperMode = Value.kForward;      
+    // }
+
+    if(rightJoystick.getTriggerPressed()) {
+      if(gripperMode == Value.kReverse) {
+        gripperMode = Value.kForward;
+      } else {
+        gripperMode = Value.kReverse;
+      }
     }
 
     solenoid.set(gripperMode);
