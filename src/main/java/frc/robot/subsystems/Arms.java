@@ -23,8 +23,10 @@ public class Arms extends SubsystemBase {
   private final PIDController armPID = new PIDController(0.03, 0.04, 0);
   private Joystick rightJoystick;
 
+  private Slider slider;
+
   /** Creates a new Arms. */
-  public Arms(Joystick leftJoystick, Joystick rightJoystick) {
+  public Arms(Joystick leftJoystick, Joystick rightJoystick, Slider slider) {
     this.rightJoystick = rightJoystick;
     this.leftArm = new CANSparkMax(Constants.DriveTrain.LEFT, MotorType.kBrushless);
     this.rightArm = new CANSparkMax(Constants.DriveTrain.RIGHT, MotorType.kBrushless);
@@ -34,6 +36,7 @@ public class Arms extends SubsystemBase {
     SmartDashboard.putNumber("armI", armPID.getI());
     SmartDashboard.putNumber("armD", armPID.getD());
     SmartDashboard.putNumber("armSpeed", 0.2);
+    this.slider = slider;
   }
 
   @Override
@@ -51,12 +54,25 @@ public class Arms extends SubsystemBase {
       RobotContainer.armMode = "zero";
     }
 
-    if (rightJoystick.getRawButtonPressed(3)) {
+    if (RobotContainer.leftJoystick.getRawButtonPressed(4)) {
       RobotContainer.armMode = "1st";
     }
 
     if (rightJoystick.getRawButtonPressed(4)) {
       RobotContainer.armMode = "2nd";
+    }
+
+    if (RobotContainer.rightJoystick.getRawButtonPressed(3)) {
+      RobotContainer.armMode = "3rd";
+    }
+
+    if(RobotContainer.controller.getLeftTriggerAxis() > 0) {
+      RobotContainer.sliderMode = "zero";
+      RobotContainer.armMode = "zero";
+    }
+
+    if(RobotContainer.controller.getRightTriggerAxis() > 0) {
+      RobotContainer.armMode = "1st";
     }
 
     // if(rightJoystick.getRawButtonPressed(3)) {
@@ -83,11 +99,23 @@ public class Arms extends SubsystemBase {
           MathUtil.clamp(this.armPID.calculate(Math.round(this.rightArm.getEncoder().getPosition()), -12), -0.3,
               0.3));
     } else if (RobotContainer.armMode.equals("2nd")) {
-      leftArm.set(
-          MathUtil.clamp(this.armPID.calculate(Math.round(this.leftArm.getEncoder().getPosition()), 17), -0.3, 0.3));
-      rightArm.set(
-          MathUtil.clamp(this.armPID.calculate(Math.round(this.rightArm.getEncoder().getPosition()), -16.75), -0.3,
-              0.3));
+      if (slider.getLeftSlider().getEncoder().getPosition() < -15
+          || slider.getRightSlider().getEncoder().getPosition() > 15) {
+        leftArm.set(
+            MathUtil.clamp(this.armPID.calculate(Math.round(this.leftArm.getEncoder().getPosition()), 17), -0.3, 0.3));
+        rightArm.set(
+            MathUtil.clamp(this.armPID.calculate(Math.round(this.rightArm.getEncoder().getPosition()), -17), -0.3,
+                0.3));
+      }
+    } else if (RobotContainer.armMode.equals("3rd")) {
+      if (slider.getLeftSlider().getEncoder().getPosition() < -9
+          || slider.getRightSlider().getEncoder().getPosition() > 9) {
+        leftArm.set(
+            MathUtil.clamp(this.armPID.calculate(Math.round(this.leftArm.getEncoder().getPosition()), 12), -0.3, 0.3));
+        rightArm.set(
+            MathUtil.clamp(this.armPID.calculate(Math.round(this.rightArm.getEncoder().getPosition()), -12), -0.3,
+                0.3));
+      }
     } else if (RobotContainer.armMode.equals("zero")) {
       if (Math.abs(this.leftArm.getEncoder().getPosition()) <= 1) {
         this.leftArm.set(0);

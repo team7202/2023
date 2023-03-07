@@ -41,8 +41,8 @@ public class RobotContainer {
   private final CameraSystem cameraSystem = new CameraSystem();
   private final DriveTrain driveTrain = new DriveTrain(leftJoystick, rightJoystick);
   private final Limelight limelight = new Limelight(driveTrain);
-  private final Arms arms = new Arms(leftJoystick, rightJoystick);
   private final Slider slider = new Slider(leftJoystick, rightJoystick);
+  private final Arms arms = new Arms(leftJoystick, rightJoystick, slider);
   private final Gripper gripper = new Gripper(leftJoystick, rightJoystick);
   private final Lights lights = new Lights();
   // private final ExampleCommand m_autoCommand = new ExampleCommand(m_exampleSubsystem);
