@@ -15,15 +15,24 @@ package frc.robot;
 public final class Constants {
 
   public static final class OI {
-    public static int JOYSTICK1 = 0;
-    public static int JOYSTICK2 = 1;
-    public static int CONTROLLER = 2;
+    public static final int JOYSTICK1 = 0;
+    public static final int JOYSTICK2 = 1;
+    public static final int CONTROLLER = 2;
   }
 
   public static final class CAN {
-    public static int REAR_LEFT_DRIVE = 2;
-    public static int FRONT_LEFT_DRIVE = 5;
-    public static int FRONT_RIGHT_DRIVE = 4;
-    public static int REAR_RIGHT_DRIVE = 3;
+    public static final int REAR_LEFT_DRIVE = 2;
+    public static final int FRONT_LEFT_DRIVE = 1;
+    public static final int FRONT_RIGHT_DRIVE = 4;
+    public static final int REAR_RIGHT_DRIVE = 3;
+
+    public static final int LEFT_ARM = 13;
+    public static final int RIGHT_ARM = 21;
+  }
+
+  public static final class PID {
+    public static final double ARM_P = 0.03;
+    public static final double ARM_I = 0.04;
+    public static final double ARM_D = 0;
   }
 }
