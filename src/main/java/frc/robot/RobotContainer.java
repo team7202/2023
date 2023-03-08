@@ -10,6 +10,9 @@ import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.RunCommand;
 import edu.wpi.first.wpilibj2.command.button.CommandJoystick;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
+import frc.robot.commands.arms.ZeroArms;
+import frc.robot.commands.drive.DriveForward;
+import frc.robot.subsystems.Arms;
 import frc.robot.subsystems.DriveTrain;
 
 /**
@@ -28,7 +31,10 @@ public class RobotContainer {
   public static final CommandXboxController controller = new CommandXboxController(Constants.OI.CONTROLLER);
 
   private final DriveTrain driveTrain = new DriveTrain();
-
+  private final Arms arms = new Arms();
+  
+  private final DriveForward driveForward = new DriveForward(driveTrain);
+  private final ZeroArms zeroArms = new ZeroArms(arms);
   // The robot's subsystems and commands are defined here...
   // private final ExampleCommand m_autoCommand = new
   // ExampleCommand(m_exampleSubsystem);
@@ -53,6 +59,9 @@ public class RobotContainer {
    */
   private void configureButtonBindings() {
     driveTrain.setDefaultCommand(new RunCommand(() -> driveTrain.tankDrive(leftJoystick.getY(), rightJoystick.getY()), driveTrain));
+    leftJoystick.trigger().whileTrue(driveForward);
+    // zeroArms.andThen
+    rightJoystick.button(2).onTrue(zeroArms);
   }
 
   /**
