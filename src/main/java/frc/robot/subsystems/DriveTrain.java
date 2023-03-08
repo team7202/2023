@@ -14,22 +14,24 @@ import frc.robot.Constants;
 
 public class DriveTrain extends SubsystemBase {
   /** Creates a new DriveTrain. */
-  
+
   private final CANSparkMax rearLeftMax;
   private final CANSparkMax frontLeftMax;
-  private final CANSparkMax frontRightMax; 
+  private final CANSparkMax frontRightMax;
   private final CANSparkMax rearRightMax;
 
   private final MotorControllerGroup leftGroup;
   private final MotorControllerGroup rightGroup;
 
   private final DifferentialDrive drive;
-  
+
+  private MotorType motorType = MotorType.kBrushless;
+
   public DriveTrain() {
-    this.rearLeftMax = new CANSparkMax(Constants.CAN.REAR_LEFT_DRIVE, MotorType.kBrushed);
-    this.frontLeftMax = new CANSparkMax(Constants.CAN.FRONT_LEFT_DRIVE, MotorType.kBrushed);
-    this.frontRightMax = new CANSparkMax(Constants.CAN.FRONT_RIGHT_DRIVE, MotorType.kBrushed);
-    this.rearRightMax = new CANSparkMax(Constants.CAN.REAR_RIGHT_DRIVE, MotorType.kBrushed);
+    this.rearLeftMax = new CANSparkMax(Constants.CAN.REAR_LEFT_DRIVE, motorType);
+    this.frontLeftMax = new CANSparkMax(Constants.CAN.FRONT_LEFT_DRIVE, motorType);
+    this.frontRightMax = new CANSparkMax(Constants.CAN.FRONT_RIGHT_DRIVE, motorType);
+    this.rearRightMax = new CANSparkMax(Constants.CAN.REAR_RIGHT_DRIVE, motorType);
     this.leftGroup = new MotorControllerGroup(rearLeftMax, frontLeftMax);
     this.rightGroup = new MotorControllerGroup(rearRightMax, frontRightMax);
     this.rightGroup.setInverted(true);
@@ -37,9 +39,33 @@ public class DriveTrain extends SubsystemBase {
   }
 
   @Override
-  public void periodic() {}
+  public void periodic() {
+  }
 
   public void tankDrive(double leftSpeed, double rightSpeed) {
-    this.drive.tankDrive(leftSpeed, rightSpeed);
+    double difference = Math.abs(leftSpeed - rightSpeed);
+    double multiplier;
+
+    if (leftSpeed > rightSpeed) {
+      multiplier = Math.abs(leftSpeed) * 0.55;
+    } else {
+      multiplier = Math.abs(rightSpeed) * 0.55;
+    }
+
+    if (leftSpeed < 0 && rightSpeed < 0) {
+      if (leftSpeed < rightSpeed) {
+        tankDrive(leftSpeed + ((0.2 + multiplier) * difference), rightSpeed);
+      } else {
+        tankDrive(leftSpeed, rightSpeed + ((0.2 + multiplier) * difference));
+      }
+    } else if (leftSpeed > 0 && rightSpeed > 0) {
+      if (leftSpeed < rightSpeed) {
+        tankDrive(leftSpeed + ((0.2 + multiplier) * difference), rightSpeed);
+      } else {
+        tankDrive(leftSpeed, rightSpeed + ((0.2 + multiplier) * difference));
+      }
+    } else {
+      tankDrive(Math.pow(leftSpeed, 3), Math.pow(rightSpeed, 3));
+    }
   }
 }
