@@ -5,18 +5,15 @@
 package frc.robot.commands.arms;
 
 import edu.wpi.first.math.MathUtil;
-import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.CommandBase;
 import frc.robot.subsystems.Arms;
 
-public class ZeroArms extends CommandBase {
-  /** Creates a new ZeroArms. */
+public class Score2Arms extends CommandBase {
 
   private final Arms arms;
 
-  private boolean finished = false;
-
-  public ZeroArms(Arms arms) {
+  /** Creates a new Score2Arms. */
+  public Score2Arms(Arms arms) {
     addRequirements(arms);
     this.arms = arms;
     // Use addRequirements() here to declare subsystem dependencies.
@@ -30,29 +27,23 @@ public class ZeroArms extends CommandBase {
   // Called every time the scheduler runs while the command is scheduled.
   @Override
   public void execute() {
-    if (Math.abs(arms.leftEncoder.getPosition()) <= 1) {
-      arms.leftArm.set(0);
-      finished = true;
-    } else if (Math.abs(arms.rightEncoder.getPosition()) <= 1) {
-      arms.rightArm.set(0);
-      finished = true;
-    } else {
-      arms.leftArm.set(
-          MathUtil.clamp(arms.armPID.calculate(Math.round(arms.leftEncoder.getPosition()), 1), -0.05,
-              0.05));
-      arms.rightArm.set(
-          MathUtil.clamp(arms.armPID.calculate(Math.round(arms.rightEncoder.getPosition()), -1), -0.05,
-              0.05));
-    }
+    arms.leftArm.set(
+        MathUtil.clamp(this.arms.armPID.calculate(Math.round(this.arms.leftEncoder.getPosition()), 12), -0.3, 0.3));
+    arms.rightArm.set(
+        MathUtil.clamp(this.arms.armPID.calculate(Math.round(this.arms.rightEncoder.getPosition()), -12), -0.3,
+            0.3));
   }
 
   // Called once the command ends or is interrupted.
   @Override
-  public void end(boolean interrupted) {}
+  public void end(boolean interrupted) {
+    arms.leftArm.set(0);
+    arms.rightArm.set(0);
+  }
 
   // Returns true when the command should end.
   @Override
   public boolean isFinished() {
-    return finished;
+    return false;
   }
 }

@@ -8,7 +8,9 @@ import com.revrobotics.CANSparkMax;
 import com.revrobotics.RelativeEncoder;
 import com.revrobotics.CANSparkMaxLowLevel.MotorType;
 
+import edu.wpi.first.math.MathUtil;
 import edu.wpi.first.math.controller.PIDController;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants;
 
@@ -32,8 +34,40 @@ public class Arms extends SubsystemBase {
     this.rightEncoder.setPosition(0);
   }
 
+  public void setSpeed(double leftSpeed, double rightSpeed) {
+    this.leftArm.set(leftSpeed);
+    this.rightArm.set(rightSpeed);
+  }
+
+  public void scoreHigh() {
+    leftArm.set(
+        MathUtil.clamp(this.armPID.calculate(Math.round(this.leftEncoder.getPosition()), 17), -0.3, 0.3));
+    rightArm.set(
+        MathUtil.clamp(this.armPID.calculate(Math.round(this.rightEncoder.getPosition()), -17), -0.3,
+            0.3));
+  }
+
+  public void zero() {
+    if (Math.abs(leftEncoder.getPosition()) <= 1) {
+      leftArm.set(0);
+    } else if (Math.abs(rightEncoder.getPosition()) <= 1) {
+      rightArm.set(0);
+    } else {
+      leftArm.set(
+          MathUtil.clamp(armPID.calculate(Math.round(leftEncoder.getPosition()), 1), -0.05,
+              0.05));
+      rightArm.set(
+          MathUtil.clamp(armPID.calculate(Math.round(rightEncoder.getPosition()), -1), -0.05,
+              0.05));
+    }
+  }
+
   @Override
   public void periodic() {
     // This method will be called once per scheduler run
+    SmartDashboard.putNumber("leftPos", leftEncoder.getPosition());
+    SmartDashboard.putNumber("leftSpeed", leftArm.get());
+    SmartDashboard.putNumber("rightPos", rightEncoder.getPosition());
+    SmartDashboard.putNumber("rightSpeed", rightArm.get());
   }
 }

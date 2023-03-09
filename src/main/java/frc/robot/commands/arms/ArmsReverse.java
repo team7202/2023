@@ -4,19 +4,15 @@
 
 package frc.robot.commands.arms;
 
-import edu.wpi.first.math.MathUtil;
-import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.CommandBase;
 import frc.robot.subsystems.Arms;
 
-public class ZeroArms extends CommandBase {
-  /** Creates a new ZeroArms. */
+public class ArmsReverse extends CommandBase {
 
   private final Arms arms;
 
-  private boolean finished = false;
-
-  public ZeroArms(Arms arms) {
+  /** Creates a new ArmsReverse. */
+  public ArmsReverse(Arms arms) {
     addRequirements(arms);
     this.arms = arms;
     // Use addRequirements() here to declare subsystem dependencies.
@@ -30,29 +26,18 @@ public class ZeroArms extends CommandBase {
   // Called every time the scheduler runs while the command is scheduled.
   @Override
   public void execute() {
-    if (Math.abs(arms.leftEncoder.getPosition()) <= 1) {
-      arms.leftArm.set(0);
-      finished = true;
-    } else if (Math.abs(arms.rightEncoder.getPosition()) <= 1) {
-      arms.rightArm.set(0);
-      finished = true;
-    } else {
-      arms.leftArm.set(
-          MathUtil.clamp(arms.armPID.calculate(Math.round(arms.leftEncoder.getPosition()), 1), -0.05,
-              0.05));
-      arms.rightArm.set(
-          MathUtil.clamp(arms.armPID.calculate(Math.round(arms.rightEncoder.getPosition()), -1), -0.05,
-              0.05));
-    }
+    arms.leftArm.set(-0.1);
+    arms.rightArm.set(0.1);
   }
 
   // Called once the command ends or is interrupted.
   @Override
-  public void end(boolean interrupted) {}
+  public void end(boolean interrupted) {
+  }
 
   // Returns true when the command should end.
   @Override
   public boolean isFinished() {
-    return finished;
+    return false;
   }
 }
