@@ -6,6 +6,7 @@ package frc.robot.subsystems;
 
 import com.kauailabs.navx.frc.AHRS;
 import com.revrobotics.CANSparkMax;
+import com.revrobotics.RelativeEncoder;
 import com.revrobotics.CANSparkMaxLowLevel.MotorType;
 
 import edu.wpi.first.math.MathUtil;
@@ -13,6 +14,7 @@ import edu.wpi.first.math.controller.PIDController;
 import edu.wpi.first.wpilibj.SPI;
 import edu.wpi.first.wpilibj.drive.DifferentialDrive;
 import edu.wpi.first.wpilibj.motorcontrol.MotorControllerGroup;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants;
 
@@ -23,6 +25,11 @@ public class DriveTrain extends SubsystemBase {
   public final CANSparkMax frontLeftMax;
   public final CANSparkMax frontRightMax;
   public final CANSparkMax rearRightMax;
+
+  public final RelativeEncoder rearLeftEncoder;
+  public final RelativeEncoder frontLeftEncoder;
+  public final RelativeEncoder frontRightEncoder;
+  public final RelativeEncoder rearRightEncoder;
 
   public final MotorControllerGroup leftGroup;
   public final MotorControllerGroup rightGroup;
@@ -38,9 +45,13 @@ public class DriveTrain extends SubsystemBase {
 
   public DriveTrain() {
     this.rearLeftMax = new CANSparkMax(Constants.CAN.REAR_LEFT_DRIVE, motorType);
+    this.rearLeftEncoder = rearLeftMax.getEncoder();
     this.frontLeftMax = new CANSparkMax(Constants.CAN.FRONT_LEFT_DRIVE, motorType);
+    this.frontLeftEncoder = frontLeftMax.getEncoder();
     this.frontRightMax = new CANSparkMax(Constants.CAN.FRONT_RIGHT_DRIVE, motorType);
+    this.frontRightEncoder = frontRightMax.getEncoder();
     this.rearRightMax = new CANSparkMax(Constants.CAN.REAR_RIGHT_DRIVE, motorType);
+    this.rearRightEncoder = rearRightMax.getEncoder();
     this.leftGroup = new MotorControllerGroup(rearLeftMax, frontLeftMax);
     this.rightGroup = new MotorControllerGroup(rearRightMax, frontRightMax);
     this.leftGroup.setInverted(true);
@@ -53,6 +64,13 @@ public class DriveTrain extends SubsystemBase {
 
   @Override
   public void periodic() {
+    SmartDashboard.putNumber("Rear Left Wheel Speed", rearLeftMax.get());
+    SmartDashboard.putNumber("Front Left Wheel Speed", frontLeftMax.get());
+    SmartDashboard.putNumber("Front Right Wheel Speed", frontRightMax.get());
+    SmartDashboard.putNumber("Rear Right Wheel Speed", rearRightMax.get());
+    SmartDashboard.putNumber("Gyro Pitch", gyro.getPitch());
+    SmartDashboard.putNumber("Gyro Yaw", gyro.getYaw());
+    SmartDashboard.putNumber("Gyro Roll", gyro.getRoll());
   }
 
   public void tankDrive(double leftSpeed, double rightSpeed) {

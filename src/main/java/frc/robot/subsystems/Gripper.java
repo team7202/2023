@@ -8,30 +8,32 @@ import edu.wpi.first.wpilibj.Compressor;
 import edu.wpi.first.wpilibj.DoubleSolenoid;
 import edu.wpi.first.wpilibj.PneumaticsModuleType;
 import edu.wpi.first.wpilibj.DoubleSolenoid.Value;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 
 import frc.robot.Constants;
 
 public class Gripper extends SubsystemBase {
 
-  private final Compressor compressor;
   public final DoubleSolenoid solenoid;
-  private Value value;
-  
+  public final Value value;
+
   /** Creates a new Gripper. */
-  public Gripper(Compressor compressor) {
-    this.compressor = compressor;
-    this.compressor.enableDigital();
-    this.solenoid = new DoubleSolenoid(PneumaticsModuleType.CTREPCM, Constants.PCM.SOLENOID1[0], Constants.PCM.SOLENOID1[1]);
+  public Gripper() {
+    this.solenoid = new DoubleSolenoid(PneumaticsModuleType.CTREPCM, Constants.PCM.SOLENOID1[0],
+        Constants.PCM.SOLENOID1[1]);
     this.value = Value.kReverse;
+    this.solenoid.set(value);
   }
 
   @Override
   public void periodic() {
-    this.solenoid.set(value);
+    SmartDashboard.putString("Gripper Mode", this.solenoid.get() == Value.kForward ? "Reverse" : "Forward");
+
   }
 
-  public void setValue(Value value) {
-    this.value = value;
+  public void toggleValue() {
+    Value val = value == Value.kForward ? Value.kReverse : Value.kForward;
+    this.solenoid.set(val);
   }
 }

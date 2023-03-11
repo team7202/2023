@@ -6,7 +6,6 @@ package frc.robot.subsystems;
 
 import edu.wpi.first.cameraserver.CameraServer;
 import edu.wpi.first.cscore.UsbCamera;
-import edu.wpi.first.cscore.VideoMode.PixelFormat;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 
 public class CameraSystem extends SubsystemBase {
@@ -20,16 +19,11 @@ public class CameraSystem extends SubsystemBase {
     this.camera = CameraServer.startAutomaticCapture();
     this.camera2 = CameraServer.startAutomaticCapture();
     this.camera.setResolution(320, 240);
-    // this.camera.setPixelFormat(PixelFormat.kY16);
     this.camera2.setResolution(320, 240);
-    // this.camera2.setPixelFormat(PixelFormat.kY16);
-    // this.camera.setResolution(720, 480);
   }
 
   @Override
-  public void periodic() {
-    // This method will be called once per scheduler run
-  }
+  public void periodic() {}
 
   public UsbCamera getCamera() {
       return camera;

@@ -4,33 +4,33 @@
 
 package frc.robot.subsystems;
 
-import edu.wpi.first.wpilibj.Compressor;
 import edu.wpi.first.wpilibj.DoubleSolenoid;
 import edu.wpi.first.wpilibj.PneumaticsModuleType;
 import edu.wpi.first.wpilibj.DoubleSolenoid.Value;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants;
 
 public class Catcher extends SubsystemBase {
-  
-  private final Compressor compressor;
+
   public final DoubleSolenoid solenoid;
   private Value value;
-  
+
   /** Creates a new Catcher. */
-  public Catcher(Compressor compressor) {
-    this.compressor = compressor;
-    this.solenoid = new DoubleSolenoid(PneumaticsModuleType.CTREPCM, Constants.PCM.SOLENOID2[0], Constants.PCM.SOLENOID2[1]);
+  public Catcher() {
+    this.solenoid = new DoubleSolenoid(PneumaticsModuleType.CTREPCM, Constants.PCM.SOLENOID2[0],
+        Constants.PCM.SOLENOID2[1]);
     this.value = Value.kReverse;
+    this.solenoid.set(value);
   }
 
   @Override
   public void periodic() {
-    this.solenoid.set(value);
-    // This method will be called once per scheduler run
+    SmartDashboard.putString("Catcher Mode", this.solenoid.get() == Value.kForward ? "Reverse" : "Forward");
   }
 
-  public void setValue(Value value) {
-    this.value = value;
+  public void toggleValue() {
+    Value val = value == Value.kForward ? Value.kReverse : Value.kForward;
+    this.solenoid.set(val);
   }
 }
