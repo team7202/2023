@@ -4,7 +4,7 @@
 
 package frc.robot.commands.auto;
 
-import edu.wpi.first.wpilibj.Timer;
+import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
 import frc.robot.commands.arms.ZeroArms;
 
@@ -14,9 +14,17 @@ import frc.robot.commands.arms.ZeroArms;
 public class AutonomousCommand extends SequentialCommandGroup {
 
   /** Creates a new AutonomousCommand. */
-  public AutonomousCommand(ScoreGamePiece scoreGamePiece, ZeroArms zeroArms, DriveReverseAuto driveReverseAuto, DriveForwardAuto driveForwardAuto, AutoBalance autoBalance) {
+  public AutonomousCommand(SendableChooser<String> autoRoute, ScoreGamePiece scoreGamePiece, ZeroArms zeroArms,
+      DriveReverseAuto driveReverseAuto, DriveForwardAuto driveForwardAuto, AutoBalance autoBalance) {
     // Add your commands in the addCommands() call, e.g.
     // addCommands(new FooCommand(), new BarCommand());
-    addCommands(scoreGamePiece, driveReverseAuto, driveForwardAuto, autoBalance);
+    switch (autoRoute.getSelected()) {
+      case "center":
+        addCommands(scoreGamePiece, driveReverseAuto, driveForwardAuto, autoBalance);
+        break;
+      default:
+        addCommands(scoreGamePiece, driveReverseAuto, driveForwardAuto, autoBalance);
+        break;
+    }
   }
 }

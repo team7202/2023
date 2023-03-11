@@ -12,6 +12,8 @@ public class ZeroSlider extends CommandBase {
 
   private final Slider slider;
 
+  private boolean finished = false;
+
   /** Creates a new ZeroSlider. */
   public ZeroSlider(Slider slider) {
     addRequirements(slider);
@@ -28,9 +30,9 @@ public class ZeroSlider extends CommandBase {
   @Override
   public void execute() {
     if (Math.abs(slider.leftEncoder.getPosition()) <= 1) {
-      slider.leftSlider.set(0);
+      finished = true;
     } else if (Math.abs(slider.rightEncoder.getPosition()) <= 1) {
-      slider.rightSlider.set(0);
+      finished = true;
     } else {
       slider.leftSlider.set(
           MathUtil.clamp(slider.sliderPID.calculate(Math.round(slider.leftEncoder.getPosition()), 1), -0.15,
@@ -44,11 +46,13 @@ public class ZeroSlider extends CommandBase {
   // Called once the command ends or is interrupted.
   @Override
   public void end(boolean interrupted) {
+    slider.leftSlider.set(0);
+    slider.rightSlider.set(0);
   }
 
   // Returns true when the command should end.
   @Override
   public boolean isFinished() {
-    return false;
+    return finished;
   }
 }

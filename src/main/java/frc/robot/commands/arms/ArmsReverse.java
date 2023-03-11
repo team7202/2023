@@ -33,6 +33,8 @@ public class ArmsReverse extends CommandBase {
   // Called once the command ends or is interrupted.
   @Override
   public void end(boolean interrupted) {
+    arms.leftArm.set(0);
+    arms.rightArm.set(0);
   }
 
   // Returns true when the command should end.

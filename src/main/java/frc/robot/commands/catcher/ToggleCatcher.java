@@ -4,32 +4,29 @@
 
 package frc.robot.commands.catcher;
 
-import edu.wpi.first.wpilibj.DoubleSolenoid.Value;
 import edu.wpi.first.wpilibj2.command.CommandBase;
 import frc.robot.subsystems.Catcher;
 
 public class ToggleCatcher extends CommandBase {
 
   private final Catcher catcher;
-  private final Value value;
 
   /** Creates a new MoveCatcher. */
-  public ToggleCatcher(Catcher catcher, Value value) {
+  public ToggleCatcher(Catcher catcher) {
     addRequirements(catcher);
     this.catcher = catcher;
-    this.value = value;
     // Use addRequirements() here to declare subsystem dependencies.
   }
 
   // Called when the command is initially scheduled.
   @Override
-  public void initialize() {}
+  public void initialize() {
+    catcher.toggleValue();
+  }
 
   // Called every time the scheduler runs while the command is scheduled.
   @Override
-  public void execute() {
-    this.catcher.setValue(value);
-  }
+  public void execute() {}
 
   // Called once the command ends or is interrupted.
   @Override
@@ -38,6 +35,6 @@ public class ToggleCatcher extends CommandBase {
   // Returns true when the command should end.
   @Override
   public boolean isFinished() {
-    return false;
+    return true;
   }
 }

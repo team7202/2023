@@ -5,7 +5,6 @@
 package frc.robot.commands.arms;
 
 import edu.wpi.first.math.MathUtil;
-import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.CommandBase;
 import frc.robot.subsystems.Arms;
 
@@ -31,10 +30,8 @@ public class ZeroArms extends CommandBase {
   @Override
   public void execute() {
     if (Math.abs(arms.leftEncoder.getPosition()) <= 1) {
-      arms.leftArm.set(0);
       finished = true;
     } else if (Math.abs(arms.rightEncoder.getPosition()) <= 1) {
-      arms.rightArm.set(0);
       finished = true;
     } else {
       arms.leftArm.set(
@@ -48,7 +45,10 @@ public class ZeroArms extends CommandBase {
 
   // Called once the command ends or is interrupted.
   @Override
-  public void end(boolean interrupted) {}
+  public void end(boolean interrupted) {
+    arms.leftArm.set(0);
+    arms.rightArm.set(0);
+  }
 
   // Returns true when the command should end.
   @Override

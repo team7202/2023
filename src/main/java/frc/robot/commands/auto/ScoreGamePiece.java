@@ -5,7 +5,6 @@
 package frc.robot.commands.auto;
 
 import edu.wpi.first.wpilibj.Timer;
-import edu.wpi.first.wpilibj.DoubleSolenoid.Value;
 import edu.wpi.first.wpilibj2.command.CommandBase;
 import frc.robot.subsystems.Arms;
 import frc.robot.subsystems.Gripper;
@@ -38,9 +37,9 @@ public class ScoreGamePiece extends CommandBase {
   public void execute() {
     arms.scoreHigh();
     if(timer.get() < 2) {
-      gripper.setValue(Value.kForward);
+      gripper.toggleValue();
     } else {
-      gripper.setValue(Value.kReverse);
+      gripper.toggleValue();
       finished = true;
     }
   }

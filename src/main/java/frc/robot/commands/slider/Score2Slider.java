@@ -36,6 +36,8 @@ public class Score2Slider extends CommandBase {
   // Called once the command ends or is interrupted.
   @Override
   public void end(boolean interrupted) {
+    slider.leftSlider.set(0);
+    slider.rightSlider.set(0);
   }
 
   // Returns true when the command should end.

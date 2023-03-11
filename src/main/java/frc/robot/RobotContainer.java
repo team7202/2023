@@ -9,8 +9,8 @@ import edu.wpi.first.wpilibj.GenericHID;
 import edu.wpi.first.wpilibj.PneumaticsModuleType;
 import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj.XboxController;
-import edu.wpi.first.wpilibj.DoubleSolenoid.Value;
 import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.RunCommand;
 import edu.wpi.first.wpilibj2.command.button.CommandJoystick;
@@ -50,67 +50,102 @@ import frc.robot.subsystems.Slider;
  */
 public class RobotContainer {
 
-  SendableChooser<String> autoRoute = new SendableChooser<>();
+  private final SendableChooser<String> autoRoute = new SendableChooser<>();
+
+  private final Timer timer = new Timer();
 
   private final Compressor compressor = new Compressor(Constants.PCM.COMPRESSOR, PneumaticsModuleType.CTREPCM);
-  
 
   public static final CommandJoystick leftJoystick = new CommandJoystick(Constants.OI.JOYSTICK1);
   public static final CommandJoystick rightJoystick = new CommandJoystick(Constants.OI.JOYSTICK2);
   public static final CommandXboxController controller = new CommandXboxController(Constants.OI.CONTROLLER);
 
-  private final DriveTrain driveTrain = new DriveTrain();
-  private final Arms arms = new Arms();
-  private final Slider slider = new Slider();
-  private final Gripper gripper = new Gripper(compressor);
-  private final Catcher catcher = new Catcher(compressor);
-  private final CameraSystem cameraSystem = new CameraSystem();
+  // Subsystems
+  private DriveTrain driveTrain;
+  private Arms arms;
+  private Slider slider;
+  private Gripper gripper;
+  private Catcher catcher;
+  private CameraSystem cameraSystem;
 
-  private final Timer timer = new Timer();
+  // Autonomous Commands
+  private ScoreGamePiece scoreGamePiece;
+  private DriveReverseAuto driveReverseAuto;
+  private DriveForwardAuto driveForwardAuto;
+  private AutoBalance autoBalance;
 
-  private final ScoreGamePiece scoreGamePiece = new ScoreGamePiece(timer, arms, gripper);
-  private final DriveReverseAuto driveReverseAuto = new DriveReverseAuto(driveTrain, arms);
-  private final DriveForwardAuto driveForwardAuto = new DriveForwardAuto(driveTrain);
-  private final AutoBalance autoBalance = new AutoBalance(driveTrain);
-  // private final DriveReverseAuto driveReverseAuto = new DriveReverseAuto(timer, );
-
-
-  private final DriveForward driveForward = new DriveForward(driveTrain);
-
-  private final ZeroArms zeroArms = new ZeroArms(arms);
-  private final ArmsForward armsForward = new ArmsForward(arms);
-  private final ArmsReverse armsReverse = new ArmsReverse(arms);
-  private final PickupArms pickupArms = new PickupArms(arms);
-  private final Score2Arms score2Arms = new Score2Arms(arms);
-  private final Score3Arms score3Arms = new Score3Arms(arms);
-
-  private final ZeroSlider zeroSlider = new ZeroSlider(slider);
-  private final Score2Slider score2Slider = new Score2Slider(slider);
-  private final Score3Slider score3Slider = new Score3Slider(slider);
-
-  private final AutonomousCommand autonomous = new AutonomousCommand(scoreGamePiece, zeroArms, driveReverseAuto, driveForwardAuto, autoBalance);
-
-
-  private final ToggleGripper openGripper = new ToggleGripper(gripper, Value.kForward);
-  private final ToggleGripper closeGripper = new ToggleGripper(gripper, Value.kReverse);
-
-  private final ToggleCatcher openCatcher = new ToggleCatcher(catcher, Value.kForward);
-  private final ToggleCatcher closeCatcher = new ToggleCatcher(catcher, Value.kReverse);
-
-
-
-  // The robot's subsystems and commands are defined here...
-  // private final ExampleCommand m_autoCommand = new
-  // ExampleCommand(m_exampleSubsystem);
-  // private final AutonomousCommand autonomousCommand = new
-  // AutonomousCommand(driveTrain);
+  // Teleop Commands
+  // DriveTrain Commands
+  private DriveForward driveForward;
+  // Arm Commands
+  private ZeroArms zeroArms;
+  private ArmsForward armsForward;
+  private ArmsReverse armsReverse;
+  private PickupArms pickupArms;
+  private Score2Arms score2Arms;
+  private Score3Arms score3Arms;
+  // Slider Commands
+  private ZeroSlider zeroSlider;
+  private Score2Slider score2Slider;
+  private Score3Slider score3Slider;
+  // Gripper Commands
+  private ToggleGripper toggleGripper;
+  private ToggleCatcher toggleCatcher;
 
   /**
    * The container for the robot. Contains subsystems, OI devices, and commands.
    */
   public RobotContainer() {
-    // Configure the button bindings
+    autoRoute.setDefaultOption("CENTER", "center");
+    SmartDashboard.putData("Auto Routes", autoRoute);
+    compressor.enableDigital();
+    configureSubsystems();
+    configureAutoCommands();
+    configureCommands();
     configureButtonBindings();
+  }
+
+  /**
+   * Use this method to define your subsystems.
+   */
+  private void configureSubsystems() {
+    this.driveTrain = new DriveTrain();
+    this.arms = new Arms();
+    this.slider = new Slider();
+    this.gripper = new Gripper();
+    this.catcher = new Catcher();
+    this.cameraSystem = new CameraSystem();
+  }
+
+  /**
+   * Use this method to define your autonomous commands.
+   */
+  private void configureAutoCommands() {
+    this.scoreGamePiece = new ScoreGamePiece(timer, arms, gripper);
+    this.driveReverseAuto = new DriveReverseAuto(driveTrain, arms);
+    this.driveForwardAuto = new DriveForwardAuto(driveTrain);
+    this.autoBalance = new AutoBalance(driveTrain);
+  }
+
+  /**
+   * Use this method to define your commands.
+   */
+  private void configureCommands() {
+    this.driveForward = new DriveForward(driveTrain);
+
+    this.zeroArms = new ZeroArms(arms);
+    this.armsForward = new ArmsForward(arms);
+    this.armsReverse = new ArmsReverse(arms);
+    this.pickupArms = new PickupArms(arms);
+    this.score2Arms = new Score2Arms(arms);
+    this.score3Arms = new Score3Arms(arms);
+
+    this.zeroSlider = new ZeroSlider(slider);
+    this.score2Slider = new Score2Slider(slider);
+    this.score3Slider = new Score3Slider(slider);
+
+    this.toggleGripper = new ToggleGripper(gripper);
+    this.toggleCatcher = new ToggleCatcher(catcher);
   }
 
   /**
@@ -122,20 +157,20 @@ public class RobotContainer {
    * edu.wpi.first.wpilibj2.command.button.JoystickButton}.
    */
   private void configureButtonBindings() {
-    driveTrain.setDefaultCommand(
-        new RunCommand(() -> driveTrain.tankDrive(leftJoystick.getY(), rightJoystick.getY()), driveTrain));
-    leftJoystick.trigger().whileTrue(driveForward);
+    driveTrain.setDefaultCommand(new RunCommand(() -> driveTrain.tankDrive(leftJoystick.getY(), rightJoystick.getY()), driveTrain));
+    
+    leftJoystick.trigger().whileTrue(driveForward);    
+    
     rightJoystick.button(2).onTrue(zeroSlider.alongWith(zeroArms));
-    // arms.setDefaultCommand(
-    //   new RunCommand(() -> arms.move();, null)
-    // );
-    rightJoystick.povUp().onTrue(armsForward);
-    rightJoystick.povDown().onTrue(armsReverse);
+    rightJoystick.povUp().whileTrue(armsForward);
+    rightJoystick.povDown().whileTrue(armsReverse);
+    
     leftJoystick.button(4).onTrue(pickupArms);
+    
     rightJoystick.button(3).onTrue(score2Slider.alongWith(score2Arms));
     rightJoystick.button(4).onTrue(score3Slider.alongWith(score3Arms));
-    rightJoystick.trigger().toggleOnTrue(closeGripper).toggleOnFalse(openGripper);
-    rightJoystick.button(16).toggleOnTrue(openCatcher).toggleOnFalse(closeCatcher);
+    rightJoystick.trigger().toggleOnTrue(toggleGripper).toggleOnFalse(toggleGripper);
+    rightJoystick.button(16).toggleOnTrue(toggleCatcher).toggleOnFalse(toggleCatcher);
   }
 
   /**
@@ -144,8 +179,7 @@ public class RobotContainer {
    * @return the command to run in autonomous
    */
   public Command getAutonomousCommand() {
-    // An ExampleCommand will run in autonomous
-    // return m_autoCommand;
-    return null;
+    return new AutonomousCommand(autoRoute, scoreGamePiece, zeroArms, driveReverseAuto,
+        driveForwardAuto, autoBalance);
   }
 }
