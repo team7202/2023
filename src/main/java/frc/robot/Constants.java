@@ -39,12 +39,12 @@ public final class Constants {
 
   public static final class PID {
     public static final double ARM_P = 0.03;
-    public static final double ARM_I = 0.02;
+    public static final double ARM_I = 0.04;
     public static final double ARM_D = 0;
 
     public static final double SLIDER_P = 0.05;
     public static final double SLIDER_I = 0;
-    public static final double SLIDER_D = 0.075;
+    public static final double SLIDER_D = 0;
 
     public static final double FEET_P = 0.5;
     public static final double FEET_I = 0.25;
@@ -65,6 +65,7 @@ public final class Constants {
   public static final class PCM {
     public static final int COMPRESSOR = 0;
     public static final int[] SOLENOID1 = { 0, 1 };
+    public static final int[] SOLENOID2 = { 2, 3 };
   }
 
   public static final class MATH {

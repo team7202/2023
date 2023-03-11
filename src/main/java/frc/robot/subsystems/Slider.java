@@ -37,8 +37,10 @@ public class Slider extends SubsystemBase {
     this.rightUpperLimit = new DigitalInput(Constants.DI.RIGHT_UPPER_SLIDER_SW);
     this.leftSlider = new CANSparkMax(Constants.CAN.LEFT_SLIDER, MotorType.kBrushless);
     this.leftEncoder = this.leftSlider.getEncoder();
+    this.leftEncoder.setPosition(0);
     this.rightSlider = new CANSparkMax(Constants.CAN.RIGHT_SLIDER, MotorType.kBrushless);
     this.rightEncoder = this.rightSlider.getEncoder();
+    this.rightEncoder.setPosition(0);
   }
 
   @Override

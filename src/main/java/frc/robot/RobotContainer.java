@@ -4,9 +4,12 @@
 
 package frc.robot;
 
+import edu.wpi.first.wpilibj.Compressor;
 import edu.wpi.first.wpilibj.GenericHID;
+import edu.wpi.first.wpilibj.PneumaticsModuleType;
 import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj.XboxController;
+import edu.wpi.first.wpilibj.DoubleSolenoid.Value;
 import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.RunCommand;
@@ -23,12 +26,15 @@ import frc.robot.commands.auto.AutonomousCommand;
 import frc.robot.commands.auto.DriveForwardAuto;
 import frc.robot.commands.auto.DriveReverseAuto;
 import frc.robot.commands.auto.ScoreGamePiece;
+import frc.robot.commands.catcher.ToggleCatcher;
 import frc.robot.commands.drive.DriveForward;
+import frc.robot.commands.gripper.ToggleGripper;
 import frc.robot.commands.slider.Score2Slider;
 import frc.robot.commands.slider.Score3Slider;
 import frc.robot.commands.slider.ZeroSlider;
 import frc.robot.subsystems.Arms;
 import frc.robot.subsystems.CameraSystem;
+import frc.robot.subsystems.Catcher;
 import frc.robot.subsystems.DriveTrain;
 import frc.robot.subsystems.Gripper;
 import frc.robot.subsystems.Slider;
@@ -45,6 +51,8 @@ import frc.robot.subsystems.Slider;
 public class RobotContainer {
 
   SendableChooser<String> autoRoute = new SendableChooser<>();
+
+  private final Compressor compressor = new Compressor(Constants.PCM.COMPRESSOR, PneumaticsModuleType.CTREPCM);
   
 
   public static final CommandJoystick leftJoystick = new CommandJoystick(Constants.OI.JOYSTICK1);
@@ -54,7 +62,8 @@ public class RobotContainer {
   private final DriveTrain driveTrain = new DriveTrain();
   private final Arms arms = new Arms();
   private final Slider slider = new Slider();
-  private final Gripper gripper = new Gripper();
+  private final Gripper gripper = new Gripper(compressor);
+  private final Catcher catcher = new Catcher(compressor);
   private final CameraSystem cameraSystem = new CameraSystem();
 
   private final Timer timer = new Timer();
@@ -82,8 +91,13 @@ public class RobotContainer {
   private final AutonomousCommand autonomous = new AutonomousCommand(scoreGamePiece, zeroArms, driveReverseAuto, driveForwardAuto, autoBalance);
 
 
-  // private final ToggleGripper openGripper = new ToggleGripper(gripper, Value.kForward);
-  // private final ToggleGripper closeGripper = new ToggleGripper(gripper, Value.kReverse);
+  private final ToggleGripper openGripper = new ToggleGripper(gripper, Value.kForward);
+  private final ToggleGripper closeGripper = new ToggleGripper(gripper, Value.kReverse);
+
+  private final ToggleCatcher openCatcher = new ToggleCatcher(catcher, Value.kForward);
+  private final ToggleCatcher closeCatcher = new ToggleCatcher(catcher, Value.kReverse);
+
+
 
   // The robot's subsystems and commands are defined here...
   // private final ExampleCommand m_autoCommand = new
@@ -120,7 +134,8 @@ public class RobotContainer {
     leftJoystick.button(4).onTrue(pickupArms);
     rightJoystick.button(3).onTrue(score2Slider.alongWith(score2Arms));
     rightJoystick.button(4).onTrue(score3Slider.alongWith(score3Arms));
-    // rightJoystick.trigger().toggleOnTrue(closeGripper).toggleOnFalse(openGripper);
+    rightJoystick.trigger().toggleOnTrue(closeGripper).toggleOnFalse(openGripper);
+    rightJoystick.button(16).toggleOnTrue(openCatcher).toggleOnFalse(closeCatcher);
   }
 
   /**
